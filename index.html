@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="body">
+  <head>
+    <template id="plt">
+      <div id="my-element">
+        <pre id="code" class="code sv"></pre>
+      </div>
+    </template>
+    <template id="bar">
+      <svg
+        class="win mac"
+        xmlns="http://www.w3.org/2000/svg"
+        width="54"
+        height="14"
+        viewBox="0 0 54 14"
+      >
+        <circle
+          cx="6"
+          cy="6"
+          r="6"
+          fill="#FF5F56"
+          stroke="#E0443E"
+          stroke-width=".5"
+          xmlns="http://www.w3.org/2000/svg"
+        />
+        <circle
+          cx="26"
+          cy="6"
+          r="6"
+          fill="#FFBD2E"
+          stroke="#DEA123"
+          stroke-width=".5"
+          xmlns="http://www.w3.org/2000/svg"
+        />
+        <circle
+          cx="46"
+          cy="6"
+          r="6"
+          fill="#27C93F"
+          stroke="#1AAB29"
+          stroke-width=".5"
+          xmlns="http://www.w3.org/2000/svg"
+        />
+      </svg>
+    </template>
+    <shadow id="shw"></shadow>
+    <script src="screenshot.js" type="text/javascript" charset="utf-8"></script>
+    <meta charset="UTF-8" />
+    <title>Convert HTML to Canvas</title>
+    <link rel="stylesheet" href="semantic.css" type="text/css" media="all" />
+    <script src="src-noconflict/ace.js"></script>
+    <script src="src-noconflict/ext-static_highlight.js"></script>
+    <style id="ace_cc">
+      .body .win.macn {
+        display: block;
+        opacity: 1;
+        xposition: absolute;
+        background: rgb(160, 160, 160);
+        border-radius: 100px;
+      }
+      .win.mac {
+        padding: 16px 0;
+      }
+      .ace_static_highlight {
+        line-height: 22px;
+        font-size: 16px;
+        width: max-content;
+        padding: 26px;
+        padding-top: 0;
+      }
+      .prw {
+      }
+      .code.editor {
+        border-radius: 12px;
+      }
+
+      .code {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 0 2px 1px gray, 0 0 16px gray;
+        width: max-content;
+        min-width: 330px;
+      }
+
+      #my-element {
+        padding: 60px;
+        width: max-content;
+        justify-content: center;
+        align-items: center;
+      }
+      #my-element.main {
+        xwidth: 250px;
+      }
+      #my-element {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /*
+       min-width: 100vw;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;*/
+      }
+      .bg {
+        background: linear-gradient(rgb(187, 177, 0), rgb(255, 248, 127));
+        background: yellow;
+      }
+      /*
+      #my-element{
+        background: green;
+      }
+      .x-svg, #my-elemexnt{
+         background: blue;
+      }
+       */
+
+      .body #my-element {
+        position: static;
+        transform: translate(0);
+        
+      }
+      #shw {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+    </style>
+    <style>
+      body {
+        padding: 1em;
+      }
+      .ace_mobile-menu,
+      [action="more"] {
+        display: none;
+      }
+      pre {
+        margin: 0;
+        display: block;
+      }
+      #my-element .editor {
+        width: 60%;
+        max-width: 420px;
+        height: auto;
+        min-height: 225px;
+      }
+      #snap > img {
+        max-width: 350px;
+        height: auto;
+      }
+
+      img,
+      canvas {
+        border: 3px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="ui header">Html codeshot</h1>
+    <div id="my-element" class="bg main">
+      <pre
+        id="code"
+        class="code editor"
+        ace-mode="ace/mode/html"
+        ace-theme="ace/theme/one_dark"
+      ></pre>
+    </div>
+    <br />
+    <button
+      class="ui secondary button"
+      onclick="edt(editor.getValue(),foo,'image')"
+    >
+      Preview
+    </button>
+    <button
+      class="ui primary button"
+      onclick="edt(editor.getValue(),foo,'image/webp')"
+    >
+      Save
+    </button>
+    <br />
+    <br />
+    <div id="snap"></div>
+    <script>
+      var mode = "ace/mode/html",
+        theme = "ace/theme/one_dark";
+
+      var hl = ace.require("ace/ext/static_highlight");
+
+      var snap = document.getElementById("snap");
+      // var pre = document.getElementById("code");
+
+      var foo = function (d) {
+        if (d instanceof Node) {
+          snap.innerHTML = null;
+          snap.appendChild(d);
+        } else if (d instanceof Blob) {
+          download(d, Date.now() + "_code_snap");
+        }
+      };
+
+      var editor = ace.edit("code", {
+        value: `<h1>Hello</h1>`,
+        mode: mode || "ace/mode/html",
+        theme: theme || "ace/theme/one_dark",
+   
+        keyboardHandler: "ace/keyboard/vscode",
+        fontSize: 12,
+        //wrap: "off"||"free"||"printMargin"||"40",
+        cursorStyle: "smooth",
+        //foldStyle: "manual"||"markbegin"||"markbeginend",
+        useSoftTabs: false,
+
+        scrollPastEnd: 0,
+        navigateWithinSoftTabs: false,
+        behavioursEnabled: false,
+        wrapBehavioursEnabled: false,
+
+        enableAutoIndent: false,
+        selectionStyle: false,
+
+        highlightActiveLine: true,
+
+        showInvisibles: false,
+
+        displayIndentGuides: true,
+        highlightIndentGuides: true,
+
+        hScrollBarAlwaysVisible: false,
+        vScrollBarAlwaysVisible: false,
+        animatedScroll: false,
+        showGutter: false,
+        showLineNumbers: false,
+        relativeLineNumbers: false,
+        fixedWidthGutter: false,
+        showPrintMargin: false,
+        indentedSoftWrap: true,
+        highlightSelectedWord: false,
+        fadeFoldWidgets: false,
+        useTextareaForIME: false,
+        mergeUndoDeltas: "Never",
+        readOnly: false,
+        copyWithEmptySelection: false,
+        customScrollbar: false,
+      });
+      //class="ace_line
+      /*var ac = editor.renderer.content;
+     ac=code
+     ac.insertBefore(win("mac"), ac.firstChild);
+      console.log(ac);*/
+    </script>
+  </body>
+</html>
+
