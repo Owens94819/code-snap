@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html class="body">
   <head>
     <template id="plt">
@@ -44,13 +45,11 @@
       </svg>
     </template>
     <shadow id="shw"></shadow>
-    <script src="screenshot.js" type="text/javascript" charset="utf-8"></script>
     <meta charset="UTF-8" />
     <title>Convert HTML to Canvas</title>
-    <link rel="stylesheet" href="semantic.css" type="text/css" media="all" />
     <script src="src-noconflict/ace.js"></script>
-    <script src="src-noconflict/ext-static_highlight.js"></script>
-    <style id="ace_cc">
+    <link rel="stylesheet" href="semantic.css" type="text/css" media="all" />
+    <style id="ace_cus">
       .body .win.macn {
         display: block;
         opacity: 1;
@@ -67,6 +66,7 @@
         width: max-content;
         padding: 26px;
         padding-top: 0;
+        xpadding-left: 0;
       }
       .prw {
       }
@@ -104,8 +104,8 @@
         align-items: center;*/
       }
       .bg {
-        background: linear-gradient(rgb(187, 177, 0), rgb(255, 248, 127));
-        background: yellow;
+        xbackground: linear-gradient(rgb(187, 177, 0), rgb(255, 248, 127));
+        xbackground: red;
       }
       /*
       #my-element{
@@ -119,7 +119,6 @@
       .body #my-element {
         position: static;
         transform: translate(0);
-        
       }
       #shw {
         opacity: 0;
@@ -144,11 +143,17 @@
         margin: 0;
         display: block;
       }
-      #my-element .editor {
+      #my-element>div.wrp{
+        max-height: 250px;
+        overflow: auto;
+        xwidth: max-content;
         width: 60%;
         max-width: 420px;
-        height: auto;
-        min-height: 225px;
+      }
+      #my-element .editor {
+        xwidth: 100%;
+        xheight: auto;
+        xmax-height: 225px;
       }
       #snap > img {
         max-width: 350px;
@@ -162,14 +167,48 @@
     </style>
   </head>
   <body>
-    <h1 class="ui header">Html codeshot</h1>
+    <h1 class="ui header">code shot</h1>
+    
+    language:
+    <select name="lang" id="lang" onchange="_lang(this.value)">
+      <option value="" class="loading">loading...</option>
+      <option value="xjsx">xjsx</option>
+      <option value="html">html</option>
+      <option value="javascript">javascript</option>
+      <option value="css">css</option>
+    </select>
+    <br/>
+    theme:
+   <select name="theme" id="theme" onchange="_theme(this.value)">
+      <option value="" class="loading">loading...</option>
+      <option value="textmate">Default</option>
+      <option value="one_dark">One dark</option>
+      <option value="dracula">Dracula</option>
+    </select>
+    <br />
+    padding:
+<input style="width:60px" onchange="query._set('paf',em.padding=this.value)" type="text" name="60px" id="pad"/>
+   
+    <br />
+    background color:
+    <br />
+    css:
+<input style="width:60px" onchange="query._set('bg',_color.value=bg.backgroundColor=this.value)" type="text" name="#ffff00" id="color"/>
+  color picker:
+<input onchange="query._set('bg',color.value=bg.backgroundColor=this.value)" type="color" name="#ffff00" id="_color"/>
+    <br />
+   background image/gradient:
+   <input onchange="query._set('bgm',bg.backgroundImage=this.value)" type="text" id="bgm" name="none" placeholder="linear-gradient(red, blue) | url(image.png)"/>
+   
     <div id="my-element" class="bg main">
+      <div class="wrp code editor">
       <pre
         id="code"
-        class="code editor"
+        class="_code _editor"
         ace-mode="ace/mode/html"
         ace-theme="ace/theme/one_dark"
       ></pre>
+      </div>
     </div>
     <br />
     <button
@@ -187,29 +226,75 @@
     <br />
     <br />
     <div id="snap"></div>
+    
     <script>
-      var mode = "ace/mode/html",
-        theme = "ace/theme/one_dark";
+    var lang=document.querySelector("#lang")
+    var theme=document.querySelector("#theme")
+    var theme=document.querySelector("#theme")
+    var color=document.querySelector("#color")
+    var _color=document.querySelector("#_color")
+    var pad=document.querySelector("#pad")
+    var bgm=document.querySelector("#bgm")
+    var snap = document.getElementById("snap");
+    var bg=document.querySelector("#ace_cus").sheet.rules[9].style
+    var em=document.querySelector("#ace_cus").sheet.rules[6].style
 
-      var hl = ace.require("ace/ext/static_highlight");
 
-      var snap = document.getElementById("snap");
-      // var pre = document.getElementById("code");
-
+    var _l=true,_t=_l, pending=_l,hl,handled,prwd;
+    l=console.log;
+  
+    URLSearchParams.prototype._get=function(n) {
+       n=this.get(n)
+       return "string"===typeof n?n.trim().toLowerCase():"";
+    }
+    URLSearchParams.prototype._set=function(n,v) {
+      this.set(n, v);
+      handled=true;
+       location.hash = this;
+    }
+    
+    var query=new URLSearchParams(location.hash.substring(1));
+   var _mode={
+     html:{
+       extensions:"html"
+     },
+     css:{
+       extensions:"css"
+     },
+     javascript:{
+       extensions:"js"
+     }
+   }
+ 
       var foo = function (d) {
         if (d instanceof Node) {
           snap.innerHTML = null;
+          prwd=true
           snap.appendChild(d);
         } else if (d instanceof Blob) {
           download(d, Date.now() + "_code_snap");
         }
       };
+ 
+    if (!query.has("v")) {
+      localStorage.value=""
+    }
+      
+   (lang.xvalue=query._get("lang")||"xjsx")
+   var mode= "ace/mode/" + (lang.xvalue==="xjsx"?"html":lang.xvalue)
+   var style= "ace/theme/"+ (theme.xvalue=query._get("theme")||"textmate");
+  
+  
+
+    
+  
+
 
       var editor = ace.edit("code", {
-        value: `<h1>Hello</h1>`,
+        value: localStorage.value||`\n\n\tloading...\n\n`,
         mode: mode || "ace/mode/html",
-        theme: theme || "ace/theme/one_dark",
-   
+        theme: style || "ace/theme/one_dark",
+        maxLines: 100,
         keyboardHandler: "ace/keyboard/vscode",
         fontSize: 12,
         //wrap: "off"||"free"||"printMargin"||"40",
@@ -249,12 +334,68 @@
         copyWithEmptySelection: false,
         customScrollbar: false,
       });
-      //class="ace_line
-      /*var ac = editor.renderer.content;
-     ac=code
-     ac.insertBefore(win("mac"), ac.firstChild);
-      console.log(ac);*/
+      
+  
+     
+    import("./src-noconflict/ext-themelist.js")
+    .then(()=>import("./src-noconflict/ext-modelist.js"))
+    .then(()=>import("./src-noconflict/ext-static_highlight.js"))
+    .then(()=>import("./screenshot.js"))
+    .then(()=> {
+     hl = ace.require("ace/ext/static_highlight");
+     setTimeout(function() {
+         requestAnimationFrame(load);
+       }, 0);
+    }); 
+    
+    
+    _color.value=color.value=query._get("bg")||color.name
+   bg.backgroundColor=color.value
+   
+    bgm.value=query._get("bgm")||bgm.name
+   bg.backgroundImage=bgm.value
+   
+    pad.value=query._get("pad")||pad.name
+   em.padding=pad.value
+   
+   editor.renderer.textarea.addEventListener("input",function (argument) {
+    localStorage.value=editor.getValue();
+    query._set("v",true)
+   })
+   
+   onhashchange=function() {
+     if (handled) {
+       handled=false
+       return 
+     }
+     query=new URLSearchParams(location.hash.substring(1));
+    
+     color.value=query._get("bg")||color.name
+     bg.backgroundColor=color.value;
+     
+     bgm.value=query._get("bgm")||bgm.name
+   bg.backgroundImage=bgm.value
+   
+       pad.value=query._get("pad")||pad.name
+      em.padding=pad.value
+   
+   if (pending) {
+      lang.xvalue=query._get("lang")||"xjsx"
+    mode= "ace/mode/" + (lang.xvalue==="xjsx"?"html":lang.xvalue)
+    style= "ace/theme/"+ (theme.xvalue=query._get("theme")||"textmate");
+   doc(lang.xvalue)
+   }else{
+      lang.value=query._get("lang")||"xjsx"
+    mode= "ace/mode/" + (lang.value==="xjsx"?"html":lang.value)
+    style= "ace/theme/"+ (theme.value=query._get("theme")||"textmate");
+   doc(lang.value)
+   }
+   editor.session.setMode(mode);
+   editor.setTheme(style)
+   if (prwd) {
+   //  edt(editor.getValue())
+   }
+   }
     </script>
   </body>
 </html>
-

@@ -1,0 +1,7 @@
+<?if: x < y?>
+  <p>x is lesser than y</p>
+<?else-if: x === y?>
+  <p>x is equal to y</p>
+<?else?>
+  <p>neither condition's where true</p>
+<?end?>
