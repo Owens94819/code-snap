@@ -1,7 +1,7 @@
-<?if: x < y?>
-  <p>x is lesser than y</p>
-<?else-if: x === y?>
-  <p>x is equal to y</p>
+<?if: x % 2 === 0 ?>
+  <p>X is an Even number</p>
+<?else-if: x % 2 === 1 ?>
+ <p>X is an Odd number</p>
 <?else?>
-  <p>neither condition's where true</p>
+  <p>Neither condition was true</p>
 <?end?>
