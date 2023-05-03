@@ -182,7 +182,7 @@ window.download = function (url, name) {
 };
 
 window.ss = function (e, foo, t) {
-  toSvg(e, { type: t || "image", quality: 1 }).then(
+  toSvg(e, { type: t || "image", quality: 1.0 }).then(
     foo ||
       function (dt) {
         // download(dt,Date.now()+"_code_shot")
