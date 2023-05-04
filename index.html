@@ -87,6 +87,7 @@
         width: max-content;
         justify-content: center;
         align-items: center;
+        
       }
       #my-element.main {
         xwidth: 250px;
@@ -226,8 +227,10 @@
     <br />
     <br />
     <div id="snap"></div>
-    
-    <script>
+    <script src="src-noconflict/ext-language_tools.js"></script>
+<script>
+    // trigger extension
+    ace.require("ace/ext/language_tools");
     var lang=document.querySelector("#lang")
     var theme=document.querySelector("#theme")
     var theme=document.querySelector("#theme")
@@ -291,6 +294,11 @@
 
 
       var editor = ace.edit("code", {
+        
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true,
+        
         value: localStorage.value||`\n\n\tloading...\n\n`,
         mode: mode || "ace/mode/html",
         theme: style || "ace/theme/one_dark",
