@@ -41,12 +41,20 @@ function can(img, type, opt, r) {
   //  return new Promise (function(r){
   var canvas = document.createElement("canvas");
   var ctx = canvas.getContext("2d");
-  canvas.width = opt.width;
-  canvas.height = opt.height;
-  // console.log(img);
+  //canvas.width = opt.width;
+  //canvas.height = opt.height;
+  //img.style.minWidth=opt.size"1000px";
+  //console.log(opt.size);
+  img.style.minWidth=opt.size+"px";
+  img.id="hidden";
+  document.body.appendChild(img)
+ //console.log(opt);
   img.onload = function () {
-    ctx.drawImage(img, 0, 0);
+  canvas.width = img.width;
+  canvas.height = img.height;
+    ctx.drawImage(img, 0, 0,canvas.width, canvas.height);
     DOMURL.revokeObjectURL(img.src);
+   img.remove();
     if (type) {
       //image/webp
       canvas.toBlob(
@@ -60,7 +68,6 @@ function can(img, type, opt, r) {
       r(canvas);
     }
   };
-
   //  })
 }
 
@@ -77,12 +84,11 @@ window.toSvg = function (element, opt) {
 
   opt.__proto__ = {
     type: null,
-    size: 400,
     width: width,
     height: height,
     quality: 1,
   };
-
+if(opt.size < 50) opt.size=420
   var dt = `
                 <svg class="x-svg bg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width}px ${height}px" width="${width}px" height="${height}px">
                 <title>canvas</title>
@@ -176,24 +182,24 @@ window.download = function (url, name) {
   if (url instanceof Blob) {
     url = DOMURL.createObjectURL(url);
   }
+  
   ach.download = name || "untitled";
   ach.href = url;
   ach.click();
 };
 
-window.ss = function (e, foo, t) {
-  toSvg(e, { type: t || "image", quality: 1.0 }).then(
+window.ss = function (e, foo, t, size) {
+  toSvg(e, { type: t || "image", quality: 1.0, size:size }).then(
     foo ||
       function (dt) {
         // download(dt,Date.now()+"_code_shot")
-        // console.log(dt);
         prwd=true
         document.body.appendChild(dt);
       }
   );
 };
 
-window.edt = function (tmp, foo, t) {
+window.edt = function (tmp, foo, t, size) {
   shw.innerHTML = plt.innerHTML;
   var element = shw.querySelector("#my-element");
   var code = shw.querySelector("#code");
@@ -210,7 +216,7 @@ window.edt = function (tmp, foo, t) {
       //  console.log(f);
       var c = code.firstChild.firstChild;
       c.insertBefore(win("mac"), c.firstChild);
-      ss(element, foo, t);
+      ss(element, foo, t, size);
     }
   );
 };
